@@ -195,8 +195,12 @@ export const FormulaEditor: React.FC<FormulaEditorProps> = ({ initialFormula, on
       const { data, raw } = await generateFormulaFromDescription(aiPrompt);
       setAiJsonContent(raw);
       autoSaveAndRun(data);
-    } catch (e) {
-      alert("Failed to generate formula.");
+    } catch (e: any) {
+      if (e?.message === "API_KEY_MISSING") {
+        alert("API ключ Gemini не задан при сборке приложения. Пожалуйста, соберите приложение с валидным GEMINI_API_KEY на GitHub, либо используйте вкладку ручной вставки JSON (Manual JSON) или кнопкой над полем скопируйте базовый Промпт для ручной отправки в сторонний ИИ-чат и импорта результата.");
+      } else {
+        alert("Не удалось сгенерировать формулу. Проверьте правильность API-ключа или сетевое подключение.");
+      }
     } finally {
       setIsGenerating(false);
     }

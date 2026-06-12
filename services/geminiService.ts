@@ -1,7 +1,24 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { AIFormulaResponse } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+let aiInstance: GoogleGenAI | null = null;
+
+const getAiInstance = (): GoogleGenAI => {
+  if (!aiInstance) {
+    let apiKey: string | undefined = undefined;
+    try {
+      apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+    } catch (e) {
+      // Игнорируем ошибку обращения к process.env
+    }
+
+    if (!apiKey || apiKey === "undefined" || apiKey === "null" || apiKey.trim() === "") {
+      throw new Error("API_KEY_MISSING");
+    }
+    aiInstance = new GoogleGenAI({ apiKey });
+  }
+  return aiInstance;
+};
 
 export const SYSTEM_PROMPT_TEMPLATE = `
 You are a backend API that generates configuration for a calculator application.
@@ -88,6 +105,7 @@ export const generateFormulaFromDescription = async (description: string): Promi
   `;
 
   try {
+    const ai = getAiInstance();
     const response = await ai.models.generateContent({
       model: model,
       contents: prompt,
