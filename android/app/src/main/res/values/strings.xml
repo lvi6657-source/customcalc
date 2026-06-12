@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">CustomCalc Studio</string>
+    <string name="title_activity_main">CustomCalc Studio</string>
+    <string name="package_name">com.customcalc.studio</string>
+    <string name="custom_url_scheme">com.customcalc.studio</string>
+</resources>
